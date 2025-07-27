@@ -33,8 +33,9 @@ def heading_to_html_node(markdown):
 
 
 def code_to_html_node(markdown):
-    text_node = TextNode(markdown[4:-3], TextType.CODE)
-    parent_node = text_node_to_html_node(text_node)
+    text_node = TextNode(markdown[4:-3], TextType.TEXT)
+    html_node = text_node_to_html_node(text_node)
+    parent_node = ParentNode("code", [html_node])
     return ParentNode("pre", [parent_node])
 
 
@@ -42,11 +43,12 @@ def quote_to_html_node(markdown):
     new_lines = []
     lines = markdown.split("\n")
     for line in lines:
+        line = line.strip()
         if not line.startswith(">"):
             raise Exception("invalid quote")
         new_lines.append(line.lstrip(">").strip())
     quote = " ".join(new_lines)
-    return ParentNode("block quote", text_to_children(quote))
+    return ParentNode("blockquote", text_to_children(quote))
 
 
 def paragraph_to_html_node(markdown):
@@ -61,7 +63,7 @@ def ordered_list_to_html_node(markdown):
     for i in range(len(list_items)):
         if not list_items[i].startswith(f"{i + 1}."):
             raise Exception("incorrect list syntax")
-        children.append(ParentNode("li", text_to_children(list_items[i][2:])))
+        children.append(ParentNode("li", text_to_children(list_items[i][2:].strip())))
     return ParentNode("ol", children)
 
 
@@ -71,7 +73,7 @@ def unordered_list_to_html_node(markdown):
     for i in range(len(list_items)):
         if not list_items[i].startswith("- "):
             raise Exception("incorrect list syntax")
-        children.append(ParentNode("li", text_to_children(list_items[i][2:])))
+        children.append(ParentNode("li", text_to_children(list_items[i][2:].strip())))
     return ParentNode("ul", children)
 
 
@@ -79,15 +81,15 @@ def markdown_to_html_node(markdown):
     blocks = markdown_to_blocks(markdown)
     children = []
     for block in blocks:
-        if block.block_type == BlockType.HEADING:
+        if block_to_block_type(block) == BlockType.HEADING:
             children.append(heading_to_html_node(block))
-        elif block.block_type == BlockType.CODE:
+        elif block_to_block_type(block) == BlockType.CODE:
             children.append(code_to_html_node(block))
-        elif block.block_type == BlockType.QUOTE:
+        elif block_to_block_type(block) == BlockType.QUOTE:
             children.append(quote_to_html_node(block))
-        elif block.block_type == BlockType.PARAGRAPH:
+        elif block_to_block_type(block) == BlockType.PARAGRAPH:
             children.append(paragraph_to_html_node(block))
-        elif block.block_type == BlockType.ORDERED_LIST:
+        elif block_to_block_type(block) == BlockType.ORDERED_LIST:
             children.append(ordered_list_to_html_node(block))
         else:
             children.append(unordered_list_to_html_node(block))
