@@ -20,10 +20,9 @@ def copy_static_to_public(current_file_path=None):
 
     else:
         static = os.path.join(
-            "./docs",
+            "./static",
             current_file_path,
         )
-        print(f"current static: {static}")
         public = os.path.join(
             "./docs",
             current_file_path,
