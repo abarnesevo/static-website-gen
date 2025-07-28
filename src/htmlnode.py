@@ -1,8 +1,8 @@
-class HTMLNode():
+class HTMLNode:
     def __init__(self, tag=None, value=None, children=None, props=None):
         self.tag = tag
         self.value = value
-        self.children = children 
+        self.children = children
         self.props = props
 
     def to_html(self):
@@ -20,8 +20,14 @@ class HTMLNode():
     def __repr__(self):
         return f"HTMLNode: {self.tag}, {self.value}, {str(self.children)}, {str(self.props)}"
 
-    def __eq__(self,node):
-        return self.tag == node.tag and self.value == node.value and self.children == node.children and self.props == node.props
+    def __eq__(self, node):
+        return (
+            self.tag == node.tag
+            and self.value == node.value
+            and self.children == node.children
+            and self.props == node.props
+        )
+
 
 class LeafNode(HTMLNode):
     def __init__(self, tag, value, props=None):
@@ -31,9 +37,9 @@ class LeafNode(HTMLNode):
         self.props = props
 
     def to_html(self):
-        if not self.value:
-            raise ValueError
-        
+        if self.value == None:
+            raise ValueError("no value provided")
+
         elif not self.tag:
             return self.value
 
@@ -43,7 +49,8 @@ class LeafNode(HTMLNode):
                 key = list(self.props.keys())
                 val = list(self.props.values())
                 prop = f' {key[0]}="{val[0]}"'
-            return f"<{self.tag}{prop}>{self.value}</{self.tag}>" 
+            return f"<{self.tag}{prop}>{self.value}</{self.tag}>"
+
 
 class ParentNode(HTMLNode):
     def __init__(self, tag, children, props=None):
@@ -66,6 +73,4 @@ class ParentNode(HTMLNode):
                 key = list(self.props.keys())
                 val = list(self.props.values())
                 prop = f' {key[0]}="{val[0]}"'
-            return f"<{self.tag}{prop}>{children}</{self.tag}>" 
-
-
+            return f"<{self.tag}{prop}>{children}</{self.tag}>"

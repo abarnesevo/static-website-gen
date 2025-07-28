@@ -58,10 +58,17 @@ def split_nodes_images(old_nodes):
                 image_alt = image_data[0]
                 image_link = image_data[1]
                 sections = to_be_processed.split(f"![{image_alt}] ({image_link})", 1)
-                if sections[0] != "":
-                    splitted_list.append(TextNode(sections[0], TextType.TEXT))
-                splitted_list.append(TextNode(image_alt, TextType.IMAGE, image_link))
-                to_be_processed = sections[1]
+                if len(sections) > 1:
+                    if sections[0] != "":
+                        splitted_list.append(TextNode(sections[0], TextType.TEXT))
+                    splitted_list.append(
+                        TextNode(image_alt, TextType.IMAGE, image_link)
+                    )
+                    to_be_processed = sections[1]
+                else:
+                    splitted_list.append(
+                        TextNode(image_alt, TextType.IMAGE, image_link)
+                    )
             if to_be_processed != "":
                 splitted_list.append(TextNode(to_be_processed, TextType.TEXT))
     return splitted_list
@@ -80,10 +87,13 @@ def split_nodes_links(old_nodes):
                 link_alt = link_data[0]
                 link = link_data[1]
                 sections = to_be_processed.split(f"[{link_alt}] ({link})", 1)
-                if sections[0] != "":
-                    splitted_list.append(TextNode(sections[0], TextType.TEXT))
-                splitted_list.append(TextNode(link_alt, TextType.LINK, link))
-                to_be_processed = sections[1]
+                if len(sections) > 1:
+                    if sections[0] != "":
+                        splitted_list.append(TextNode(sections[0], TextType.TEXT))
+                    splitted_list.append(TextNode(link_alt, TextType.LINK, link))
+                    to_be_processed = sections[1]
+                else:
+                    splitted_list.append(TextNode(link_alt, TextType.LINK, link))
             if to_be_processed != "":
                 splitted_list.append(TextNode(to_be_processed, TextType.TEXT))
     return splitted_list

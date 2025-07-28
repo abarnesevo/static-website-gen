@@ -1,4 +1,5 @@
 from markdown_to_html import markdown_to_html_node
+from extract_markdown import extract_markdown_title
 import unittest
 
 
@@ -85,3 +86,13 @@ the **same** even with inline stuff
             html,
             "<div><ul><li>this is an item</li><li>this is item 2</li><li>this is item 3</li></ul></div>",
         )
+
+    def test_extract_title(self):
+        md = """
+# this is the header
+
+
+this is unrelated
+"""
+        header = extract_markdown_title(md)
+        self.assertEqual(header, "this is the header")

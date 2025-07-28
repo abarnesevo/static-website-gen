@@ -1,6 +1,17 @@
 import re
 
 
+def extract_markdown_title(markdown):
+    blocks = markdown_to_blocks(markdown)
+    header = None
+    for block in blocks:
+        if block.startswith("# "):
+            header = block
+    if not header:
+        raise Exception("no header 1 provided")
+    return header[1:].strip()
+
+
 def extract_markdown_images(text):
     extracted_list = []
     alt_matches = re.findall(r"!\[(.*?)\]", text)
